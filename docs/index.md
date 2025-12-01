@@ -1,4 +1,4 @@
 # Printer docs
 
-- Bambu Lab X1: [bambu_x1.html](bambu_x1.html)
-- Demo printer (placeholder): [fake_printer.html](fake_printer.html)
+- Bambu Lab X1: [User](bambu_x1_user.html) | [Technical](bambu_x1_tech.html)
+- Demo printer: [User](fake_printer_user.html) | [Technical](fake_printer_tech.html)

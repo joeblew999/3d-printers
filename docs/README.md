@@ -7,8 +7,8 @@ Welcome! Grab the CLI and printer guides here.
 - Release page (assets + notes): https://github.com/joeblew999/3d-printers/releases/latest
 
 ## Printer guides
-- Bambu Lab X1: `docs/bambu_x1.md`
-- Demo printer (placeholder): `docs/fake_printer.md`
+- Bambu Lab X1: `docs/bambu_x1_user.md` (user), `docs/bambu_x1_tech.md` (technical)
+- Demo printer: `docs/fake_printer_user.md` (user), `docs/fake_printer_tech.md` (technical)
 
 ## Quick start
 1) Download the binary for your OS from the Downloads page.  
