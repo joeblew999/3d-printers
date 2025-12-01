@@ -8,6 +8,7 @@ Welcome! Grab the CLI and printer guides here.
 
 ## Printer guides
 - Bambu Lab X1: `docs/bambu_x1.md`
+- Demo printer (placeholder): `docs/fake_printer.md`
 
 ## Quick start
 1) Download the binary for your OS from the Downloads page.  
