@@ -26,8 +26,8 @@ This is a placeholder printer profile to exercise the docs layout and downloads 
    x1ctl -ip localhost -access-code any -insecure             # connect to mock
    ```
 
-## Fake printer server (local)
-- Uses a self-signed cert; `-insecure` on x1ctl should stay true for this mock.
+## Behavior
+- Self-signed cert; keep `-insecure` true when talking to the mock.
 - Sends an initial message like `{"hello":"fake-printer","ts":<unix>}` then echoes any JSON back with a timestamp.
 - Use Ctrl+C to stop the mock server.
 
