@@ -3,6 +3,9 @@ version: "3"
 vars:
   APP_NAME: x1ctl
   DIST_DIR: dist
+  VERSION:
+    sh: git describe --tags --always --dirty
+  LD_FLAGS: '-X github.com/joeblew999/3d-printers/internal/version.Version={{.VERSION}}'
 
 tasks:
   default:
@@ -28,7 +31,7 @@ tasks:
       EXT: '{{if eq .OS "windows"}}.exe{{end}}'
     cmds:
       - mkdir -p {{.DIST_DIR}}
-      - GOOS={{.OS}} GOARCH={{.ARCH}} go build -o {{.DIST_DIR}}/{{.APP_NAME}}_{{.OS}}_{{.ARCH}}{{.EXT}} ./cmd/x1ctl
+      - GOOS={{.OS}} GOARCH={{.ARCH}} go build -ldflags "{{.LD_FLAGS}}" -o {{.DIST_DIR}}/{{.APP_NAME}}_{{.OS}}_{{.ARCH}}{{.EXT}} ./cmd/x1ctl
 
   build:all:
     desc: Build binaries for standard OS/ARCH matrix (linux/windows/darwin × amd64/arm64)
@@ -59,3 +62,8 @@ tasks:
     cmds:
       - git tag {{.VERSION}}
       - git push origin {{.VERSION}}
+
+  version:
+    desc: Show the resolved version (git describe)
+    cmds:
+      - echo {{.VERSION}}

@@ -15,12 +15,15 @@ task test
 
 # connect to a printer (example)
 ./dist/x1ctl_darwin_arm64 -ip 192.168.1.50 -access-code ABCD
+# check version embedded at build time
+./dist/x1ctl_darwin_arm64 -version
 ```
 
 ## Project layout
 - `cmd/x1ctl`: CLI entrypoint.
 - `internal/lan`: minimal LAN client for the printer (TLS WebSocket + login).
 - `docs/`: GitHub Pages content with download links and docs (`bambu_x1.md`).
+- `internal/version`: version string injected via `-ldflags` from `git describe`.
 - `Taskfile.yml`: build matrix and CI helper tasks.
 
 ## Release flow

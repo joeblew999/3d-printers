@@ -14,7 +14,13 @@
 </head>
 <body>
   <h1>x1ctl downloads</h1>
-  <p class="muted">Latest binaries are attached to the most recent tagged release (<code>releases/latest</code>).</p>
+  <p class="muted">
+    Latest release:
+    <a href="https://github.com/joeblew999/3d-printers/releases/latest">
+      <img alt="latest release" src="https://img.shields.io/github/v/release/joeblew999/3d-printers?display_name=tag">
+    </a>
+  </p>
+  <p class="muted">Binaries below always resolve to the newest tag via <code>releases/latest</code>.</p>
 
   <h2>Download links</h2>
   <ul>
@@ -28,7 +34,10 @@
 
   <h2>Usage</h2>
   <pre><code>./x1ctl -ip 192.168.1.50 -access-code ABCD</code></pre>
-  <p class="muted">Enable LAN Mode on the printer, note the IP and access code, and run the binary for your platform.</p>
+  <p class="muted">
+    Enable LAN Mode on the printer, note the IP and access code, and run the binary for your platform.
+    Check the build version with <code>./x1ctl -version</code>.
+  </p>
 
   <h2>Docs</h2>
   <ul>
