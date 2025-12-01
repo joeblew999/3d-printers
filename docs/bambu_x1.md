@@ -20,7 +20,7 @@
 - **LAN Mode (local, preferred for automation):**
   - Enable LAN Mode on the printer; note IP and access code (screen).
   - Open TLS WebSocket to `wss://<ip>:8883` (self-signed cert; use `InsecureSkipVerify` in dev).
-  - Authenticate by sending JSON login with the access code; exchange JSON messages thereafter.
+  - Authenticate by sending JSON login with the access code; exchange JSON messages thereafter (status, echo, jobs).
   - Discovery is usually via printer UDP broadcast; you can also set static IP and skip discovery.
 - **Cloud:** Bambu account via Bambu Studio; traffic goes through vendor cloud.
 - **Offline file:** microSD with G-code; no network needed.
@@ -31,16 +31,12 @@
 - Typical flows: keepalives, status telemetry, start/stop/pause, and job upload (G-code frames/metadata). Message schema can change with firmware—confirm against your version.
 - Keep your network trusted; do not expose 8883 to untrusted clients.
 
-## Minimal Go sketch (adapt to your firmware)
-```go
-d := websocket.Dialer{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
-conn, _, _ := d.Dial("wss://192.168.1.50:8883", nil)
-defer conn.Close()
-conn.WriteJSON(map[string]any{"cmd": "login", "password": "ABCD"})
-_, msg, _ := conn.ReadMessage()
-log.Printf("printer said: %s", msg)
-```
-Use the OrcaSlicer LAN sender as the reference for full flows (auth, topics, keepalives, job upload).
+## Using x1ctl
+- Print version: `x1ctl -version`
+- Basic read: `x1ctl -ip <printer-ip> -access-code <code> -mode read`
+- Status (tries to surface firmware fields): `x1ctl -ip <printer-ip> -access-code <code> -mode status`
+- Echo test (send/receive JSON): `x1ctl -ip <printer-ip> -access-code <code> -mode echo -message "hi"`
+Notes: LAN uses a self-signed cert; keep `-insecure` true unless you pin the cert. Port 8883 must be reachable on your LAN.
 
 ## References
 - OrcaSlicer (LAN implementation, MIT): https://github.com/SoftFever/OrcaSlicer
