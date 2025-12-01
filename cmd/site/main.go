@@ -42,6 +42,9 @@ func main() {
 		if strings.HasSuffix(servePath, "/") {
 			servePath = filepath.Join(servePath, "index.md")
 		}
+		if strings.HasSuffix(servePath, ".html") {
+			servePath = strings.TrimSuffix(servePath, ".html") + ".md"
+		}
 		if strings.HasSuffix(servePath, ".md") {
 			serveMarkdown(w, filepath.Join(*dir, strings.TrimPrefix(servePath, "/")))
 			return

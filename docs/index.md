@@ -17,8 +17,8 @@ Latest binaries (always point to the most recent tag):
 ```
 
 ## Printer docs
-- Bambu Lab X1: [bambu_x1.md](bambu_x1.md)
-- Demo printer (placeholder): [fake_printer.md](fake_printer.md)
+- Bambu Lab X1: [bambu_x1.html](bambu_x1.html)
+- Demo printer (placeholder): [fake_printer.html](fake_printer.html)
 
 ## How releases are built
 - CI builds linux/windows/mac binaries for amd64 and arm64 on tags (`v*`) and attaches them to the release.
