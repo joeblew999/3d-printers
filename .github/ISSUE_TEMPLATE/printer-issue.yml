@@ -1,0 +1,33 @@
+name: Printer issue
+description: Report a problem controlling a printer
+labels: ["bug"]
+body:
+  - type: input
+    id: printer
+    attributes:
+      label: Printer model/name
+      description: e.g., Bambu Lab X1, fake printer, etc.
+      placeholder: "Bambu Lab X1"
+    validations:
+      required: true
+  - type: input
+    id: software_version
+    attributes:
+      label: x1ctl version
+      description: Run `x1ctl -version` and paste the result.
+      placeholder: "v0.1.x"
+    validations:
+      required: true
+  - type: textarea
+    id: what_happened
+    attributes:
+      label: What happened?
+      description: What were you trying to do, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce (if applicable)
+    validations:
+      required: false
