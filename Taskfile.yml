@@ -6,6 +6,7 @@ vars:
   VERSION:
     sh: git describe --tags --always --dirty
   LD_FLAGS: '-X github.com/joeblew999/3d-printers/internal/version.Version={{.VERSION}}'
+  SITE_DIR: .site
 
 tasks:
   default:
@@ -72,3 +73,8 @@ tasks:
     desc: Serve docs locally on :8080
     cmds:
       - go run ./cmd/site -dir docs -addr :8080
+
+  docs:build:
+    desc: Render docs markdown to static HTML in {{.SITE_DIR}}
+    cmds:
+      - go run ./cmd/sitebuild -src docs -out {{.SITE_DIR}}
