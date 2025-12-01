@@ -17,13 +17,13 @@
 ## Quick connect (LAN Mode)
 1) On the printer: enable **LAN Mode**, note the IP and access code.
 2) On your PC: run the CLI (self-signed TLS; `-insecure` is on by default):
-   - Show build version: `x1ctl -version`
+   - Show build version: `x1ctl version`
    - Basic status (reads first message, tries to surface firmware):  
-     `x1ctl -ip 192.168.1.50 -access-code ABCD -mode status`
+     `x1ctl status -ip 192.168.1.50 -access-code ABCD`
    - Echo test (send/receive JSON):  
-     `x1ctl -ip 192.168.1.50 -access-code ABCD -mode echo -message "hi"`
+     `x1ctl echo -ip 192.168.1.50 -access-code ABCD -message "hi"`
    - Basic read-only:  
-     `x1ctl -ip 192.168.1.50 -access-code ABCD -mode read`
+     `x1ctl read -ip 192.168.1.50 -access-code ABCD`
 3) If it fails: ensure same subnet, port 8883 open, LAN Mode still on, access code correct.
 
 ## Notes
