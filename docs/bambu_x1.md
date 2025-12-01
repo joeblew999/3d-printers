@@ -1,4 +1,4 @@
-# Bambu Lab X1 quick notes
+# Bambu Lab X1 (control notes)
 
 ## Downloads (x1ctl)
 - Latest release: [releases/latest](https://github.com/joeblew999/3d-printers/releases/latest)
@@ -10,90 +10,45 @@
   - [Windows amd64](https://github.com/joeblew999/3d-printers/releases/latest/download/x1ctl_windows_amd64.exe)
   - [Windows arm64](https://github.com/joeblew999/3d-printers/releases/latest/download/x1ctl_windows_arm64.exe)
 
-## What it is
-- FDM printer (CoreXY) with enclosed chamber, input-shaping, and active bed leveling.
-- X1 Carbon variant adds hardened nozzle, higher temp hardware, and better cooling; otherwise similar workflow.
+## What it is (quick)
+- CoreXY FDM with enclosure, input-shaping, active bed leveling.
+- X1 Carbon adds hardened nozzle + higher temp hardware.
+- Build ~256 × 256 × 256 mm, 0.4 mm nozzle (swappable), bed to ~110 °C.
+- AMS (4-bay) for multi-material; accepts standard G-code (with Bambu metadata) and `.3mf` projects.
 
-## Core specs (operational highlights)
-- Build volume: ~256 × 256 × 256 mm.
-- Nozzle: 0.4 mm stock (swapable), up to ~300 °C; bed up to ~110 °C.
-- Multi-material: optional AMS (4-bay filament feeder).
-- File formats: standard G-code with Bambu-flavored extensions/metadata; `.3mf` project files from slicers.
+## Control paths (how to talk to it)
+- **LAN Mode (local, preferred for automation):**
+  - Enable LAN Mode on the printer; note IP and access code (screen).
+  - Open TLS WebSocket to `wss://<ip>:8883` (self-signed cert; use `InsecureSkipVerify` in dev).
+  - Authenticate by sending JSON login with the access code; exchange JSON messages thereafter.
+  - Discovery is usually via printer UDP broadcast; you can also set static IP and skip discovery.
+- **Cloud:** Bambu account via Bambu Studio; traffic goes through vendor cloud.
+- **Offline file:** microSD with G-code; no network needed.
 
-## How to talk to it
-- **Official path (supported):** Bambu Studio slicer (or OrcaSlicer) → send over LAN or cloud.
-  - On the printer, enable **LAN Mode** (to allow local control without cloud). Note the IP shown on-screen.
-  - In Studio/Orca, add device → “LAN only” → enter the printer’s IP and access code shown on the printer.
-  - Send prints or start/stop jobs directly over LAN; camera/telemetry also flow through the slicer UI.
-- **Cloud path:** Same slicer, but sign in to Bambu account; prints route via Bambu’s cloud services.
-- **Local file:** Export G-code to microSD and print from the printer menu (bypasses network).
+## Message/protocol notes (LAN)
+- Transport: MQTT-like JSON over TLS WebSocket on 8883 (self-signed cert).
+- Auth: send `{"cmd":"login","password":"<access code>"}`.
+- Typical flows: keepalives, status telemetry, start/stop/pause, and job upload (G-code frames/metadata). Message schema can change with firmware—confirm against your version.
+- Keep your network trusted; do not expose 8883 to untrusted clients.
 
-## Useful tools (open-source or community)
-- **OrcaSlicer** (MIT-licensed fork of Bambu Studio) – good reference for how LAN control is implemented and for extra tuning features.
-- **Bambu Studio** (official slicer, source available) – matches vendor UX, good for comparison.
-- Community protocol notes exist for LAN control (see links below); the protocol is not fully published by Bambu, so rely on up-to-date community findings.
-- Common workflows for automation integrate via OrcaSlicer’s LAN code paths or by emitting G-code to the printer’s SD/LAN sender.
-
-## Safety and constraints
-- The printer firmware and many cloud pieces are proprietary; there is no official public API spec.
-- Firmware updates can change LAN behaviors/protocol details; verify against the printer’s current firmware version.
-- Treat LAN access as trusted-only: avoid exposing the printer to untrusted networks; use VLAN/wifi isolation if needed.
-
-## Quick checklist to get connected on LAN
-1) On printer: enable **LAN Mode**; note IP + access code.  
-2) On PC: install Bambu Studio (or OrcaSlicer).  
-3) Add device → choose LAN → enter IP + code → test connection (see status indicator).  
-4) Send a small test print; confirm monitoring/controls work.  
-5) If connection fails: ensure same subnet, no firewall blocking slicer’s ports, and printer still in LAN Mode.
-
-## Go LAN control sketch (LAN Mode)
-- The LAN interface uses MQTT-like traffic over a TLS WebSocket on port `8883` with a self-signed cert; discovery typically happens via UDP broadcast from the printer.
-- Minimal flow: discover IP (or set static), get the on-screen access code, open a TLS WebSocket to `wss://<printer-ip>:8883` using that code in the auth payload, then publish/subscribe JSON messages (status, commands, g-code frames). Message details can change with firmware; confirm against your printer.
-- Example outline (using `github.com/gorilla/websocket`):
+## Minimal Go sketch (adapt to your firmware)
 ```go
-package main
-
-import (
-	"crypto/tls"
-	"log"
-
-	"github.com/gorilla/websocket"
-)
-
-func main() {
-	ip := "192.168.1.50" // printer IP from LAN Mode screen
-	accessCode := "ABCD" // printer's LAN access code
-
-	d := websocket.Dialer{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // printer uses self-signed cert
-	}
-
-	conn, _, err := d.Dial("wss://"+ip+":8883", nil)
-	if err != nil {
-		log.Fatalf("dial: %v", err)
-	}
-	defer conn.Close()
-
-	auth := map[string]any{
-		"cmd":  "login",
-		"password": accessCode,
-	}
-	if err := conn.WriteJSON(auth); err != nil {
-		log.Fatalf("auth send: %v", err)
-	}
-
-	// Read responses and publish commands per protocol notes...
-}
+d := websocket.Dialer{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
+conn, _, _ := d.Dial("wss://192.168.1.50:8883", nil)
+defer conn.Close()
+conn.WriteJSON(map[string]any{"cmd": "login", "password": "ABCD"})
+_, msg, _ := conn.ReadMessage()
+log.Printf("printer said: %s", msg)
 ```
-- For a fuller reference, review OrcaSlicer’s LAN sender code (auth handshake, keepalives, message schemas) and mirror that behavior in Go.
+Use the OrcaSlicer LAN sender as the reference for full flows (auth, topics, keepalives, job upload).
 
-## References and links
-- OrcaSlicer (MIT): https://github.com/SoftFever/OrcaSlicer
-- Bambu Studio source: https://github.com/bambulab/BambuStudio
-- Home Assistant LAN integration (good protocol reference): https://github.com/greghesp/ha-bambulab
-- Community LAN protocol notes: https://github.com/bambulab/BambuStudio/blob/main/resources/protocol/README.md (check against your firmware)
+## References
+- OrcaSlicer (LAN implementation, MIT): https://github.com/SoftFever/OrcaSlicer
+- Bambu Studio (vendor source): https://github.com/bambulab/BambuStudio
+- Protocol notes (community): https://github.com/bambulab/BambuStudio/blob/main/resources/protocol/README.md
+- Home Assistant integration (practical LAN client): https://github.com/greghesp/ha-bambulab
 
-## What to explore next
-- Review OrcaSlicer source to understand LAN request/response flow and message formats.
-- Capture traffic while sending a job to confirm ports/payloads used by your firmware version.
-- Scripted control can be built by mimicking the slicer’s LAN calls, but budget time for protocol changes between firmware releases.
+## What to verify when scripting
+- Firmware version vs. protocol: fields/commands can change—capture traffic on your firmware.
+- LAN Mode enabled and access code correct; same subnet; firewall allows 8883.
+- Use `-insecure` only on trusted networks; for production, pin the printer cert if possible.
