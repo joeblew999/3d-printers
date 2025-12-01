@@ -28,7 +28,11 @@ This is a placeholder printer profile to exercise the docs layout and downloads 
 ## Setup checklist (stub)
 1) Enable LAN mode (or equivalent) on the device.
 2) Note IP and access code.
-3) Run `x1ctl -ip <ip> -access-code <code> -version` to confirm build; then run without `-version` to connect.
+3) Run:
+   ```sh
+   x1ctl -ip <ip> -access-code <code> -version   # check build/tag
+   x1ctl -ip <ip> -access-code <code>            # connect (replace with real target when available)
+   ```
 
 ## Notes
 - Replace this file with actual details when you add another printer; keep links updated in `docs/index.html` and `docs/README.md`.
