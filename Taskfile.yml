@@ -1,0 +1,53 @@
+version: "3"
+
+vars:
+  APP_NAME: x1ctl
+  DIST_DIR: dist
+
+tasks:
+  default:
+    desc: Build binaries for common OS/ARCH targets
+    cmds:
+      - task: build:all
+
+  clean:
+    desc: Remove build artifacts
+    cmds:
+      - rm -rf {{.DIST_DIR}}
+
+  test:
+    desc: Run unit tests
+    cmds:
+      - go test ./...
+
+  build:
+    desc: Build binary for a specific OS/ARCH (defaults to host)
+    vars:
+      OS: '{{.OS | default .GOOS}}'
+      ARCH: '{{.ARCH | default .GOARCH}}'
+      EXT: '{{if eq .OS "windows"}}.exe{{end}}'
+    cmds:
+      - mkdir -p {{.DIST_DIR}}
+      - GOOS={{.OS}} GOARCH={{.ARCH}} go build -o {{.DIST_DIR}}/{{.APP_NAME}}_{{.OS}}_{{.ARCH}}{{.EXT}} ./cmd/x1ctl
+
+  build:all:
+    desc: Build binaries for standard OS/ARCH matrix (linux/windows/darwin × amd64/arm64)
+    cmds:
+      - task: build
+        vars: {OS: linux, ARCH: amd64}
+      - task: build
+        vars: {OS: linux, ARCH: arm64}
+      - task: build
+        vars: {OS: darwin, ARCH: amd64}
+      - task: build
+        vars: {OS: darwin, ARCH: arm64}
+      - task: build
+        vars: {OS: windows, ARCH: amd64}
+      - task: build
+        vars: {OS: windows, ARCH: arm64}
+
+  ci:
+    desc: Run tests and build all targets
+    cmds:
+      - task: test
+      - task: build:all
