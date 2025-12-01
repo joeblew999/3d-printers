@@ -2,14 +2,24 @@ name: Printer issue
 description: Report a problem controlling a printer
 labels: ["bug"]
 body:
-  - type: input
+  - type: dropdown
     id: printer
     attributes:
       label: Printer model/name
-      description: e.g., Bambu Lab X1, fake printer, etc.
-      placeholder: "Bambu Lab X1"
+      description: Choose the printer you were using
+      options:
+        - Bambu Lab X1
+        - Demo/fake printer
+        - Other (please specify below)
     validations:
       required: true
+  - type: input
+    id: printer_other
+    attributes:
+      label: If Other, which printer?
+      placeholder: "Printer model"
+    validations:
+      required: false
   - type: input
     id: software_version
     attributes:
