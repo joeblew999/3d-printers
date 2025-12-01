@@ -12,6 +12,16 @@ This is a placeholder printer profile to exercise the docs layout and downloads 
   - Windows amd64: https://github.com/joeblew999/3d-printers/releases/latest/download/x1ctl_windows_amd64.exe
   - Windows arm64: https://github.com/joeblew999/3d-printers/releases/latest/download/x1ctl_windows_arm64.exe
 
+## Downloads (fake printer mock)
+- Latest release: https://github.com/joeblew999/3d-printers/releases/latest
+- Direct binaries (always newest tag):
+  - Linux amd64: https://github.com/joeblew999/3d-printers/releases/latest/download/fakeprinter_linux_amd64
+  - Linux arm64: https://github.com/joeblew999/3d-printers/releases/latest/download/fakeprinter_linux_arm64
+  - macOS amd64: https://github.com/joeblew999/3d-printers/releases/latest/download/fakeprinter_darwin_amd64
+  - macOS arm64: https://github.com/joeblew999/3d-printers/releases/latest/download/fakeprinter_darwin_arm64
+  - Windows amd64: https://github.com/joeblew999/3d-printers/releases/latest/download/fakeprinter_windows_amd64.exe
+  - Windows arm64: https://github.com/joeblew999/3d-printers/releases/latest/download/fakeprinter_windows_arm64.exe
+
 ## What it is
 - A fake FDM printer profile for testing documentation and release pipeline.
 - Use this page as a template for adding real printers.

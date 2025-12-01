@@ -2,6 +2,7 @@ version: "3"
 
 vars:
   APP_NAME: x1ctl
+  FAKE_APP_NAME: fakeprinter
   DIST_DIR: dist
   VERSION:
     sh: git describe --tags --always --dirty
@@ -25,29 +26,60 @@ tasks:
       - go test ./...
 
   build:
-    desc: Build binary for a specific OS/ARCH (defaults to host)
+    desc: Build binary for a specific OS/ARCH (defaults to host). Override NAME for other cmds.
     vars:
       OS: '{{.OS | default .GOOS}}'
       ARCH: '{{.ARCH | default .GOARCH}}'
       EXT: '{{if eq .OS "windows"}}.exe{{end}}'
+      NAME: '{{.NAME | default .APP_NAME}}'
     cmds:
       - mkdir -p {{.DIST_DIR}}
-      - GOOS={{.OS}} GOARCH={{.ARCH}} go build -ldflags "{{.LD_FLAGS}}" -o {{.DIST_DIR}}/{{.APP_NAME}}_{{.OS}}_{{.ARCH}}{{.EXT}} ./cmd/x1ctl
+      - GOOS={{.OS}} GOARCH={{.ARCH}} go build -ldflags "{{.LD_FLAGS}}" -o {{.DIST_DIR}}/{{.NAME}}_{{.OS}}_{{.ARCH}}{{.EXT}} ./cmd/{{.NAME}}
+
+  build:x1ctl:
+    desc: Build x1ctl for a specific OS/ARCH (defaults to host)
+    cmds:
+      - task: build
+        vars:
+          NAME: '{{.APP_NAME}}'
+          OS: '{{.OS | default .GOOS}}'
+          ARCH: '{{.ARCH | default .GOARCH}}'
+
+  build:fakeprinter:
+    desc: Build fakeprinter for a specific OS/ARCH (defaults to host)
+    cmds:
+      - task: build
+        vars:
+          NAME: '{{.FAKE_APP_NAME}}'
+          OS: '{{.OS | default .GOOS}}'
+          ARCH: '{{.ARCH | default .GOARCH}}'
 
   build:all:
     desc: Build binaries for standard OS/ARCH matrix (linux/windows/darwin × amd64/arm64)
     cmds:
-      - task: build
+      - task: build:x1ctl
         vars: {OS: linux, ARCH: amd64}
-      - task: build
+      - task: build:x1ctl
         vars: {OS: linux, ARCH: arm64}
-      - task: build
+      - task: build:x1ctl
         vars: {OS: darwin, ARCH: amd64}
-      - task: build
+      - task: build:x1ctl
         vars: {OS: darwin, ARCH: arm64}
-      - task: build
+      - task: build:x1ctl
         vars: {OS: windows, ARCH: amd64}
-      - task: build
+      - task: build:x1ctl
+        vars: {OS: windows, ARCH: arm64}
+      - task: build:fakeprinter
+        vars: {OS: linux, ARCH: amd64}
+      - task: build:fakeprinter
+        vars: {OS: linux, ARCH: arm64}
+      - task: build:fakeprinter
+        vars: {OS: darwin, ARCH: amd64}
+      - task: build:fakeprinter
+        vars: {OS: darwin, ARCH: arm64}
+      - task: build:fakeprinter
+        vars: {OS: windows, ARCH: amd64}
+      - task: build:fakeprinter
         vars: {OS: windows, ARCH: arm64}
 
   ci:
