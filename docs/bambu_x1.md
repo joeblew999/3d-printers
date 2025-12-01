@@ -1,5 +1,15 @@
 # Bambu Lab X1 quick notes
 
+## Downloads (x1ctl)
+- Latest release: https://github.com/joeblew999/3d-printers/releases/latest
+- Direct binaries (always newest tag):
+  - Linux amd64: https://github.com/joeblew999/3d-printers/releases/latest/download/x1ctl_linux_amd64
+  - Linux arm64: https://github.com/joeblew999/3d-printers/releases/latest/download/x1ctl_linux_arm64
+  - macOS amd64: https://github.com/joeblew999/3d-printers/releases/latest/download/x1ctl_darwin_amd64
+  - macOS arm64: https://github.com/joeblew999/3d-printers/releases/latest/download/x1ctl_darwin_arm64
+  - Windows amd64: https://github.com/joeblew999/3d-printers/releases/latest/download/x1ctl_windows_amd64.exe
+  - Windows arm64: https://github.com/joeblew999/3d-printers/releases/latest/download/x1ctl_windows_arm64.exe
+
 ## What it is
 - FDM printer (CoreXY) with enclosed chamber, input-shaping, and active bed leveling.
 - X1 Carbon variant adds hardened nozzle, higher temp hardware, and better cooling; otherwise similar workflow.
