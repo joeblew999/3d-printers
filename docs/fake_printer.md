@@ -2,25 +2,16 @@
 
 This is a placeholder printer profile to exercise the docs layout and downloads flow.
 
-## Downloads (x1ctl)
-- Latest release: https://github.com/joeblew999/3d-printers/releases/latest
-- Direct binaries (always newest tag):
-  - Linux amd64: https://github.com/joeblew999/3d-printers/releases/latest/download/x1ctl_linux_amd64
-  - Linux arm64: https://github.com/joeblew999/3d-printers/releases/latest/download/x1ctl_linux_arm64
-  - macOS amd64: https://github.com/joeblew999/3d-printers/releases/latest/download/x1ctl_darwin_amd64
-  - macOS arm64: https://github.com/joeblew999/3d-printers/releases/latest/download/x1ctl_darwin_arm64
-  - Windows amd64: https://github.com/joeblew999/3d-printers/releases/latest/download/x1ctl_windows_amd64.exe
-  - Windows arm64: https://github.com/joeblew999/3d-printers/releases/latest/download/x1ctl_windows_arm64.exe
 
 ## Downloads (fake printer mock)
-- Latest release: https://github.com/joeblew999/3d-printers/releases/latest
+- Latest release: [releases/latest](https://github.com/joeblew999/3d-printers/releases/latest)
 - Direct binaries (always newest tag):
-  - Linux amd64: https://github.com/joeblew999/3d-printers/releases/latest/download/fakeprinter_linux_amd64
-  - Linux arm64: https://github.com/joeblew999/3d-printers/releases/latest/download/fakeprinter_linux_arm64
-  - macOS amd64: https://github.com/joeblew999/3d-printers/releases/latest/download/fakeprinter_darwin_amd64
-  - macOS arm64: https://github.com/joeblew999/3d-printers/releases/latest/download/fakeprinter_darwin_arm64
-  - Windows amd64: https://github.com/joeblew999/3d-printers/releases/latest/download/fakeprinter_windows_amd64.exe
-  - Windows arm64: https://github.com/joeblew999/3d-printers/releases/latest/download/fakeprinter_windows_arm64.exe
+  - [Linux amd64](https://github.com/joeblew999/3d-printers/releases/latest/download/fakeprinter_linux_amd64)
+  - [Linux arm64](https://github.com/joeblew999/3d-printers/releases/latest/download/fakeprinter_linux_arm64)
+  - [macOS amd64](https://github.com/joeblew999/3d-printers/releases/latest/download/fakeprinter_darwin_amd64)
+  - [macOS arm64](https://github.com/joeblew999/3d-printers/releases/latest/download/fakeprinter_darwin_arm64)
+  - [Windows amd64](https://github.com/joeblew999/3d-printers/releases/latest/download/fakeprinter_windows_amd64.exe)
+  - [Windows arm64](https://github.com/joeblew999/3d-printers/releases/latest/download/fakeprinter_windows_arm64.exe)
 
 ## What it is
 - A fake FDM printer profile for testing documentation and release pipeline.
@@ -35,13 +26,12 @@ This is a placeholder printer profile to exercise the docs layout and downloads 
 - Nozzle: TBD
 - Materials: TBD
 
-## Setup checklist (stub)
-1) Enable LAN mode (or equivalent) on the device.
-2) Note IP and access code.
-3) Run:
+## Setup checklist (for the mock)
+1) Start the mock printer: `task fakeprinter` (TLS websocket on `wss://localhost:8883` with self-signed cert).
+2) Run:
    ```sh
-   x1ctl -ip <ip> -access-code <code> -version   # check build/tag
-   x1ctl -ip <ip> -access-code <code>            # connect (replace with real target when available)
+   x1ctl -ip localhost -access-code any -insecure -version   # check build/tag
+   x1ctl -ip localhost -access-code any -insecure             # connect to mock
    ```
 
 ## Fake printer server (local)
