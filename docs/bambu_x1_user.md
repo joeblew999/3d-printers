@@ -1,5 +1,9 @@
 # Bambu Lab X1 (user)
 
+# Bambu Lab X1 (user)
+
+[Improve this page on GitHub](https://github.com/joeblew999/3d-printers/blob/main/docs/bambu_x1_user.md) · [File an issue](https://github.com/joeblew999/3d-printers/issues)
+
 ## Downloads (x1ctl)
 - Latest release: [releases/latest](https://github.com/joeblew999/3d-printers/releases/latest)
 - Direct binaries:

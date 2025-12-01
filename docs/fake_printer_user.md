@@ -1,5 +1,9 @@
 # Demo Printer (user)
 
+# Demo Printer (user)
+
+[Improve this page on GitHub](https://github.com/joeblew999/3d-printers/blob/main/docs/fake_printer_user.md) · [File an issue](https://github.com/joeblew999/3d-printers/issues)
+
 This mock printer lets you try x1ctl without real hardware.
 
 ## Downloads (fake printer)
