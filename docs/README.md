@@ -1,7 +1,15 @@
-# Docs maintenance
+# 3d-printers docs (user view)
 
-- `docs/index.html` is the GitHub Pages landing page with download links to `releases/latest`.
-- `docs/bambu_x1.md` holds the Bambu Lab X1 notes (LAN setup, references).
-- The landing shows a release badge (`releases/latest`); binaries embed the version from `git describe` via Taskfile `-ldflags`.
-- If you add more pages, link them from `index.html` and keep them pure static (no build step).
-- Pages deploys from `docs/` via `.github/workflows/pages.yml` on pushes to `main`/`master`.
+Welcome! Grab the CLI and printer guides here.
+
+- Downloads (latest release): https://joeblew999.github.io/3d-printers/  
+  Binaries always point to the newest tag; check your build with `x1ctl -version`.
+- Release page (assets + notes): https://github.com/joeblew999/3d-printers/releases/latest
+
+## Printer guides
+- Bambu Lab X1: `docs/bambu_x1.md`
+
+## Quick start
+1) Download the binary for your OS from the Downloads page.  
+2) On the printer, enable LAN Mode; note IP + access code.  
+3) Run `./x1ctl -ip <printer-ip> -access-code <code> -version` to confirm the build, then run without `-version` to connect.
