@@ -1,5 +1,5 @@
 # 3d-printers
-Utilities and notes for Bambu Lab X1 (see `bambu_x1.md`). The `x1ctl` CLI is a small Go tool to experiment with LAN Mode.
+Utilities and notes for Bambu Lab X1 (see `docs/bambu_x1.md`). The `x1ctl` CLI is a small Go tool to experiment with LAN Mode.
 
 ## Requirements
 - Go 1.22+
@@ -20,7 +20,7 @@ task test
 ## Project layout
 - `cmd/x1ctl`: CLI entrypoint.
 - `internal/lan`: minimal LAN client for the printer (TLS WebSocket + login).
-- `docs/`: GitHub Pages content with download links.
+- `docs/`: GitHub Pages content with download links and docs (`bambu_x1.md`).
 - `Taskfile.yml`: build matrix and CI helper tasks.
 
 ## Release flow
