@@ -51,3 +51,11 @@ tasks:
     cmds:
       - task: test
       - task: build:all
+
+  tag:
+    desc: "Create and push a version tag (usage: task tag VERSION=v0.1.0)"
+    requires:
+      vars: [VERSION]
+    cmds:
+      - git tag {{.VERSION}}
+      - git push origin {{.VERSION}}
