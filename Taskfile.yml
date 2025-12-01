@@ -67,3 +67,8 @@ tasks:
     desc: Show the resolved version (git describe)
     cmds:
       - echo {{.VERSION}}
+
+  serve:
+    desc: Serve docs locally on :8080
+    cmds:
+      - go run ./cmd/site -dir docs -addr :8080
