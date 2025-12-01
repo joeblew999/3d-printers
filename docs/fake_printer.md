@@ -34,5 +34,9 @@ This is a placeholder printer profile to exercise the docs layout and downloads 
    x1ctl -ip <ip> -access-code <code>            # connect (replace with real target when available)
    ```
 
+## Fake printer server (local)
+- Start the mock printer: `task fakeprinter` (listens on `wss://localhost:8883` with self-signed TLS).
+- Point `x1ctl` at `localhost` with `-access-code anything` and `-insecure` (default true) to exercise the connection flow.
+
 ## Notes
 - Replace this file with actual details when you add another printer; keep links updated in `docs/index.html` and `docs/README.md`.

@@ -78,3 +78,8 @@ tasks:
     desc: Render docs markdown to static HTML in {{.SITE_DIR}}
     cmds:
       - go run ./cmd/sitebuild -src docs -out {{.SITE_DIR}}
+
+  fakeprinter:
+    desc: Run a local fake printer (TLS websocket on :8883)
+    cmds:
+      - go run ./cmd/fakeprinter -addr :8883
