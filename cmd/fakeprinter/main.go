@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/joeblew999/3d-printers/internal/version"
 )
 
 // A minimal fake printer that accepts websocket connections on :8883 with a
@@ -27,7 +28,13 @@ var upgrader = websocket.Upgrader{
 
 func main() {
 	addr := flag.String("addr", ":8883", "listen address for fake printer (TLS websocket)")
+	showVersion := flag.Bool("version", false, "print version and exit")
 	flag.Parse()
+
+	if *showVersion {
+		log.Println(version.Version)
+		return
+	}
 
 	cert, err := selfSignedCert()
 	if err != nil {
