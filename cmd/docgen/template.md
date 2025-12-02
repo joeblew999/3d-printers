@@ -33,9 +33,10 @@ fakeprinter --update   # updates fakeprinter to latest
 plugctl update         # updates all installed plugins
 ```
 
-## Plugin Documentation
+## Plugins
 
-{{.PluginDocs}}
+{{.PluginLinks}}
+See individual plugin pages for detailed documentation.
 
 ## Documentation
 

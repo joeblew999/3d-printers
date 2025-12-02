@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"text/template"
 
@@ -33,7 +34,7 @@ type TemplateData struct {
 	PagesURL      string
 	Binaries      []string
 	DownloadTable string
-	PluginDocs    string
+	PluginLinks   string
 }
 
 // Taskfile represents the structure we need from Taskfile.yml
@@ -133,6 +134,9 @@ func parseTaskfile(path string) (Config, error) {
 }
 
 func generate(cfg Config) (string, error) {
+	// Generate separate plugin pages first
+	generatePluginPages("cmd/plugins", "docs")
+
 	data := TemplateData{
 		Title:         cfg.Repo,
 		User:          cfg.User,
@@ -142,7 +146,7 @@ func generate(cfg Config) (string, error) {
 		PagesURL:      fmt.Sprintf("https://%s.github.io/%s", cfg.User, cfg.Repo),
 		Binaries:      cfg.Binaries,
 		DownloadTable: generateDownloadTable(cfg),
-		PluginDocs:    scanPluginDocs("cmd/plugins"),
+		PluginLinks:   generatePluginLinks("cmd/plugins"),
 	}
 
 	tmpl, err := template.New("docs").Parse(templateContent)
@@ -181,7 +185,37 @@ func scanBinaries() []string {
 	return binaries
 }
 
-func scanPluginDocs(pluginsDir string) string {
+func generatePluginPages(pluginsDir, outputDir string) {
+	entries, err := os.ReadDir(pluginsDir)
+	if err != nil {
+		return
+	}
+
+	// Create docs/plugins/ directory
+	pluginDocsDir := filepath.Join(outputDir, "plugins")
+	os.MkdirAll(pluginDocsDir, 0755)
+
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+		readmePath := filepath.Join(pluginsDir, entry.Name(), "README.md")
+		content, err := os.ReadFile(readmePath)
+		if err != nil {
+			continue
+		}
+
+		// Write to docs/plugins/{name}.md
+		outPath := filepath.Join(pluginDocsDir, entry.Name()+".md")
+		if err := os.WriteFile(outPath, content, 0644); err != nil {
+			fmt.Fprintf(os.Stderr, "Warning: could not write %s: %v\n", outPath, err)
+		} else {
+			fmt.Printf("Generated %s\n", outPath)
+		}
+	}
+}
+
+func generatePluginLinks(pluginsDir string) string {
 	entries, err := os.ReadDir(pluginsDir)
 	if err != nil {
 		return ""
@@ -192,16 +226,15 @@ func scanPluginDocs(pluginsDir string) string {
 		if !entry.IsDir() {
 			continue
 		}
-		readmePath := fmt.Sprintf("%s/%s/README.md", pluginsDir, entry.Name())
-		content, err := os.ReadFile(readmePath)
-		if err != nil {
+		// Check if README exists
+		readmePath := filepath.Join(pluginsDir, entry.Name(), "README.md")
+		if _, err := os.Stat(readmePath); err != nil {
 			continue
 		}
-		sb.WriteString(string(content))
-		sb.WriteString("\n---\n\n")
+		sb.WriteString(fmt.Sprintf("- **[%s](plugins/%s.md)**\n", entry.Name(), entry.Name()))
 	}
 
-	return strings.TrimSuffix(sb.String(), "\n---\n\n")
+	return sb.String()
 }
 
 func generateDownloadTable(cfg Config) string {
