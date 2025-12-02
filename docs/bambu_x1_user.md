@@ -1,10 +1,9 @@
 # Bambu Lab X1 (user)
 
-# Bambu Lab X1 (user)
-
-[Improve this page on GitHub](https://github.com/joeblew999/3d-printers/blob/main/docs/bambu_x1_user.md) · [File an issue](https://github.com/joeblew999/3d-printers/issues)
+[Improve this page on GitHub](https://github.com/joeblew999/3d-printers/blob/main/docs/bambu_x1_user.md) | [File an issue](https://github.com/joeblew999/3d-printers/issues)
 
 ## Downloads (x1ctl)
+
 - Latest release: [releases/latest](https://github.com/joeblew999/3d-printers/releases/latest)
 - Direct binaries:
   - [Linux amd64](https://github.com/joeblew999/3d-printers/releases/latest/download/x1ctl_linux_amd64)
@@ -14,19 +13,39 @@
   - [Windows amd64](https://github.com/joeblew999/3d-printers/releases/latest/download/x1ctl_windows_amd64.exe)
   - [Windows arm64](https://github.com/joeblew999/3d-printers/releases/latest/download/x1ctl_windows_arm64.exe)
 
-## Quick connect (LAN Mode)
-1) On the printer: enable **LAN Mode**, note the IP and access code.
-2) On your PC: run the CLI (self-signed TLS; `-insecure` is on by default):
-   - Show build version: `x1ctl version`
-   - Basic status (reads first message, tries to surface firmware):  
-     `x1ctl status -ip 192.168.1.50 -access-code ABCD`
-   - Echo test (send/receive JSON):  
-     `x1ctl echo -ip 192.168.1.50 -access-code ABCD -message "hi"`
-   - Basic read-only:  
-     `x1ctl read -ip 192.168.1.50 -access-code ABCD`
-3) If it fails: ensure same subnet, port 8883 open, LAN Mode still on, access code correct.
+## Quick Connect (LAN Mode)
+
+1. On the printer: enable **LAN Mode**, note the IP and access code.
+2. On your PC, run x1ctl:
+
+```sh
+# Show build version
+x1ctl version
+
+# Basic status (reads first message, surfaces firmware info)
+x1ctl status --ip 192.168.1.50 --access-code ABCD
+
+# Echo test (send/receive JSON)
+x1ctl echo --ip 192.168.1.50 --access-code ABCD --message "hi"
+
+# Read-only connection
+x1ctl read --ip 192.168.1.50 --access-code ABCD
+```
+
+3. If it fails: ensure same subnet, port 8883 open, LAN Mode still on, access code correct.
+
+## Self-Update
+
+```sh
+# Check for updates
+x1ctl version --check
+
+# Update to latest release
+x1ctl update
+```
 
 ## Notes
-- `-version` prints the embedded build version.
+
+- `x1ctl version` prints the embedded build version.
 - Keep LAN access on trusted networks; the printer uses a self-signed cert.
-- For protocol details and scripting, see the technical doc: `bambu_x1_tech.md`.
+- For protocol details and scripting, see the technical doc: [bambu_x1_tech.md](bambu_x1_tech.md).

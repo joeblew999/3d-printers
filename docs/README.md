@@ -1,17 +1,62 @@
-# 3d-printers docs (user view)
+# User Quick Start
 
-Welcome! Grab the CLI and printer guides here.
+## Download
 
-- Downloads (latest release): https://joeblew999.github.io/3d-printers/  
-  Binaries always point to the newest tag; check your build with `x1ctl -version`.
-- Release page (assets + notes): https://github.com/joeblew999/3d-printers/releases/latest
+Get the binary for your platform from [Releases](https://github.com/joeblew999/3d-printers/releases/latest) or use the direct links on the [main page](index.md).
 
-## Printer guides
-- Bambu Lab X1: `docs/bambu_x1_user.md` (user), `docs/bambu_x1_tech.md` (technical)
-- Demo printer: `docs/fake_printer_user.md` (user), `docs/fake_printer_tech.md` (technical)
-- Contribute/fix docs: https://github.com/joeblew999/3d-printers/tree/main/docs · Issues: https://github.com/joeblew999/3d-printers/issues
+## x1ctl (Bambu X1 printer control)
 
-## Quick start
-1) Download the binary for your OS from the Downloads page.  
-2) On the printer, enable LAN Mode; note IP + access code.  
-3) Run `./x1ctl -ip <printer-ip> -access-code <code> -version` to confirm the build, then run without `-version` to connect.
+```sh
+# Check version
+x1ctl version
+
+# Connect to printer (LAN mode)
+x1ctl status --ip 192.168.1.50 --access-code ABCD
+
+# Echo test
+x1ctl echo --ip 192.168.1.50 --access-code ABCD --message "test"
+
+# Update to latest
+x1ctl update
+```
+
+See [Bambu X1 User Guide](bambu_x1_user.md) for full details.
+
+## fakeprinter (demo/test server)
+
+```sh
+# Run fake printer
+fakeprinter -addr :8883
+
+# Check version
+fakeprinter --version
+
+# Update to latest
+fakeprinter --update
+```
+
+See [Fake Printer Guide](fake_printer_user.md) for details.
+
+## Self-Update
+
+All binaries can update themselves from GitHub Releases:
+
+```sh
+# x1ctl
+x1ctl version --check  # check for updates
+x1ctl update           # download latest
+
+# fakeprinter
+fakeprinter --check-update
+fakeprinter --update
+```
+
+## Troubleshooting
+
+- Ensure firewall allows port 8883 (printer uses TLS websocket)
+- Check printer is in LAN mode with correct access code
+- Run with verbose flags if available
+
+## Contributing
+
+See [MAINTAINERS.md](MAINTAINERS.md) for development setup and how to fork this template for your own binaries.

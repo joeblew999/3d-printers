@@ -22,8 +22,3 @@ var readCmd = &cobra.Command{
 		fmt.Printf("printer said:\n%s\n", string(msg))
 	},
 }
-
-func init() {
-	readCmd.MarkPersistentFlagRequired("ip")
-	readCmd.MarkPersistentFlagRequired("access-code")
-}

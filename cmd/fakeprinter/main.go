@@ -9,15 +9,19 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"flag"
+	"fmt"
 	"log"
 	"math/big"
 	"net"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/joeblew999/3d-printers/internal/version"
 )
+
+const binaryName = "fakeprinter"
 
 // A minimal fake printer that accepts websocket connections on :8883 with a
 // self-signed TLS cert and echoes basic JSON. Useful for testing x1ctl locally.
@@ -29,11 +33,43 @@ var upgrader = websocket.Upgrader{
 func main() {
 	addr := flag.String("addr", ":8883", "listen address for fake printer (TLS websocket)")
 	showVersion := flag.Bool("version", false, "print version and exit")
+	checkUpdate := flag.Bool("check-update", false, "check for available updates")
+	doUpdate := flag.Bool("update", false, "update to latest release from GitHub")
 	flag.Parse()
 
 	if *showVersion {
-		log.Println(version.Version)
-		return
+		fmt.Println(version.Info())
+		os.Exit(0)
+	}
+
+	if *checkUpdate {
+		latest, needsUpdate, err := version.CheckUpdate()
+		if err != nil {
+			log.Fatalf("check update: %v", err)
+		}
+		if needsUpdate {
+			fmt.Printf("Update available: %s (run '%s --update' to upgrade)\n", latest, binaryName)
+		} else {
+			fmt.Println("You are running the latest version.")
+		}
+		os.Exit(0)
+	}
+
+	if *doUpdate {
+		latest, needsUpdate, err := version.CheckUpdate()
+		if err != nil {
+			log.Fatalf("check update: %v", err)
+		}
+		if !needsUpdate {
+			fmt.Println("Already at latest version:", version.Version)
+			os.Exit(0)
+		}
+		fmt.Printf("Updating from %s to %s...\n", version.Version, latest)
+		if err := version.SelfUpdate(binaryName); err != nil {
+			log.Fatalf("update failed: %v", err)
+		}
+		fmt.Println("Update complete. Restart the program to use the new version.")
+		os.Exit(0)
 	}
 
 	cert, err := selfSignedCert()

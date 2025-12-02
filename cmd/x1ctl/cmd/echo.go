@@ -34,6 +34,4 @@ var echoCmd = &cobra.Command{
 
 func init() {
 	echoCmd.Flags().StringVar(&echoMessage, "message", "hello from x1ctl", "Echo message to send")
-	echoCmd.MarkPersistentFlagRequired("ip")
-	echoCmd.MarkPersistentFlagRequired("access-code")
 }

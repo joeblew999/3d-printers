@@ -29,11 +29,6 @@ var statusCmd = &cobra.Command{
 	},
 }
 
-func init() {
-	statusCmd.MarkPersistentFlagRequired("ip")
-	statusCmd.MarkPersistentFlagRequired("access-code")
-}
-
 type lanSession interface {
 	Close() error
 	ReadRaw(ctx context.Context) ([]byte, error)
