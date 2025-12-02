@@ -167,6 +167,11 @@ tasks:
 
   # --- Docs / GitHub Pages ---
 
+  docs:generate:
+    desc: Generate docs/index.md from template (uses Taskfile vars)
+    cmds:
+      - go run ./cmd/docgen
+
   docs:serve:
     desc: Serve docs locally for preview
     preconditions:
