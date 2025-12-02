@@ -8,6 +8,8 @@ Control your Bambu Lab X1 printer over LAN. No cloud required.
 
 **fakeprinter** - A mock printer server for testing and development. Useful if you want to build tools without a real printer connected.
 
+**plugctl** - Plugin manager for installing and updating tools. Manages plugins in `~/.plugctl/bin/`.
+
 ## Quick Start
 
 1. Download the binary for your system from the table below
@@ -23,12 +25,17 @@ Or get all binaries from [GitHub Releases]({{.ReleasesURL}}/latest).
 
 ## Keeping Up to Date
 
-Both tools can update themselves. No need to re-download manually:
+All tools can update themselves. No need to re-download manually:
 
 ```sh
 x1ctl update           # updates x1ctl to latest
 fakeprinter --update   # updates fakeprinter to latest
+plugctl update         # updates all installed plugins
 ```
+
+## Plugin Documentation
+
+{{.PluginDocs}}
 
 ## Documentation
 

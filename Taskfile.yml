@@ -7,8 +7,13 @@ vars:
   GO_MODULE: github.com/{{.GITHUB_USER}}/{{.GITHUB_REPO}}
   REPO_URL: https://github.com/{{.GITHUB_USER}}/{{.GITHUB_REPO}}
 
-  # Binaries to build (space-separated list of cmd/ subdirectories)
-  BINARIES: x1ctl fakeprinter
+  # Plugins (binaries in cmd/plugins/)
+  PLUGINS:
+    sh: ls -d cmd/plugins/*/ 2>/dev/null | xargs -I{} basename {} | tr '\n' ' ' | xargs
+  # Client tools (binaries in cmd/ root)
+  CLIENTS: plugctl
+  # All binaries to build (plugins + clients)
+  BINARIES: "{{.PLUGINS}} {{.CLIENTS}}"
 
   # Build configuration
   DIST_DIR: dist
@@ -59,9 +64,17 @@ tasks:
       ARCH: "{{.ARCH | default .HOST_ARCH}}"
       EXT: '{{if eq .OS "windows"}}.exe{{end}}'
       OUTPUT: "{{.DIST_DIR}}/{{.NAME}}_{{.OS}}_{{.ARCH}}{{.EXT}}"
+      # Resolve cmd path: prefer cmd/plugins/NAME, fallback to cmd/NAME
+      CMD_PATH:
+        sh: |
+          if [ -d "cmd/plugins/{{.NAME}}" ]; then
+            echo "cmd/plugins/{{.NAME}}"
+          else
+            echo "cmd/{{.NAME}}"
+          fi
     cmds:
       - mkdir -p {{.DIST_DIR}}
-      - GOOS={{.OS}} GOARCH={{.ARCH}} CGO_ENABLED=0 go build -ldflags "{{.LD_FLAGS}}" -o {{.OUTPUT}} ./cmd/{{.NAME}}
+      - GOOS={{.OS}} GOARCH={{.ARCH}} CGO_ENABLED=0 go build -ldflags "{{.LD_FLAGS}}" -o {{.OUTPUT}} ./{{.CMD_PATH}}
       - echo "Built {{.OUTPUT}}"
 
   build:local:
@@ -264,12 +277,17 @@ tasks:
   run:fakeprinter:
     desc: Run a local fake printer (TLS websocket on :8883)
     cmds:
-      - go run ./cmd/fakeprinter -addr :8883
+      - go run ./cmd/plugins/fakeprinter -addr :8883
 
   run:x1ctl:
     desc: "Run x1ctl (usage: task run:x1ctl -- --ip 192.168.1.x --access-code XXX status)"
     cmds:
-      - go run ./cmd/x1ctl {{.CLI_ARGS}}
+      - go run ./cmd/plugins/x1ctl {{.CLI_ARGS}}
+
+  run:plugctl:
+    desc: "Run plugctl (usage: task run:plugctl -- list)"
+    cmds:
+      - go run ./cmd/plugctl {{.CLI_ARGS}}
 
   # --- Testing ---
 

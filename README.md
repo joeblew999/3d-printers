@@ -1,54 +1,63 @@
 # 3d-printers
 
-Go binaries for 3D printer control, with self-update from GitHub Releases.
+Late-bound plugin system with self-update from GitHub Releases.
 
 **Docs & Downloads:** https://joeblew999.github.io/3d-printers/
 
-## Binaries
+## What This Is
 
-| Binary | Description |
+A template for building Go binaries that:
+- Self-update from GitHub Releases
+- Install to user's home directory (`~/.plugctl/bin/`)
+- Can be managed by a central client tool
+
+## Plugins
+
+| Plugin | Description |
 |--------|-------------|
 | `x1ctl` | CLI for Bambu Lab X1 printers |
-| `fakeprinter` | Demo/test printer server |
+| `fakeprinter` | Mock printer server for testing |
 
-## Quick Start
+## Client Tool
+
+`plugctl` manages plugins without requiring sudo or system-wide installs:
 
 ```sh
-# Download from releases or install with task
-task install:remote NAME=x1ctl
-
-# Or build locally
-task build:local
-task install:local NAME=x1ctl
-
-# Check version and self-update
-x1ctl version --check
-x1ctl update
+plugctl list              # list available plugins
+plugctl install x1ctl     # install to ~/.plugctl/bin/
+plugctl update            # update all installed plugins
+plugctl install --local ./dist/x1ctl_darwin_arm64  # install local build
 ```
 
-## Features
+Add `~/.plugctl/bin` to your PATH to use installed plugins.
 
-- Cross-platform builds (Linux/macOS/Windows, amd64/arm64)
-- Self-update from GitHub Releases
-- Taskfile-based build automation
-- GitHub Pages documentation
+## Self-Update
 
-## Template System
+Every plugin can update itself:
 
-This repo serves as a reusable template for Go binary projects. To create your own:
+```sh
+x1ctl update              # update x1ctl
+x1ctl version --check     # check for updates
+fakeprinter --update      # update fakeprinter
+```
 
-1. Fork or copy this repo
-2. Update vars in `Taskfile.yml`:
+## Fork This Template
+
+Create your own late-bound plugin system:
+
+1. Fork this repo
+2. Update `Taskfile.yml`:
    ```yaml
    GITHUB_USER: your-username
    GITHUB_REPO: your-repo
-   BINARIES: your-binary
    ```
 3. Update `internal/version/version.go` with your repo
-4. Add your binary in `cmd/your-binary/`
-5. Tag `v0.1.0` to trigger first release
+4. Add plugins in `cmd/plugins/your-plugin/`
+5. Add `README.md` in each plugin folder (merged into generated docs)
+6. Run `task docs:generate`
+7. Tag `v0.1.0` to trigger first release
 
-See [MAINTAINERS.md](docs/MAINTAINERS.md) for full details.
+See [MAINTAINERS.md](docs/MAINTAINERS.md) for details.
 
 ## Development
 
@@ -56,8 +65,8 @@ See [MAINTAINERS.md](docs/MAINTAINERS.md) for full details.
 task build:local        # build for host platform
 task build:all          # build all platforms
 task test:all           # run all tests
-task run:fakeprinter    # run fake printer locally
-task run:x1ctl -- status --ip 192.168.1.x --access-code XXX
+task docs:generate      # regenerate docs from plugin READMEs
+task run:plugctl -- list
 ```
 
 ## License

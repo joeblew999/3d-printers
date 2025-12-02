@@ -33,6 +33,7 @@ type TemplateData struct {
 	PagesURL      string
 	Binaries      []string
 	DownloadTable string
+	PluginDocs    string
 }
 
 // Taskfile represents the structure we need from Taskfile.yml
@@ -112,8 +113,13 @@ func parseTaskfile(path string) (Config, error) {
 	if v, ok := tf.Vars["GITHUB_REPO"].(string); ok {
 		cfg.Repo = v
 	}
+	// BINARIES might be a shell expansion, so also scan cmd/plugins/ directly
 	if v, ok := tf.Vars["BINARIES"].(string); ok {
 		cfg.Binaries = strings.Fields(v)
+	}
+	// If BINARIES contains template syntax, scan directories instead
+	if len(cfg.Binaries) == 0 || (len(cfg.Binaries) > 0 && strings.Contains(cfg.Binaries[0], "{{")) {
+		cfg.Binaries = scanBinaries()
 	}
 	if v, ok := tf.Vars["PLATFORMS"].(string); ok {
 		cfg.Platforms = strings.Fields(v)
@@ -136,6 +142,7 @@ func generate(cfg Config) (string, error) {
 		PagesURL:      fmt.Sprintf("https://%s.github.io/%s", cfg.User, cfg.Repo),
 		Binaries:      cfg.Binaries,
 		DownloadTable: generateDownloadTable(cfg),
+		PluginDocs:    scanPluginDocs("cmd/plugins"),
 	}
 
 	tmpl, err := template.New("docs").Parse(templateContent)
@@ -149,6 +156,52 @@ func generate(cfg Config) (string, error) {
 	}
 
 	return buf.String(), nil
+}
+
+func scanBinaries() []string {
+	var binaries []string
+
+	// Scan cmd/plugins/
+	if entries, err := os.ReadDir("cmd/plugins"); err == nil {
+		for _, entry := range entries {
+			if entry.IsDir() {
+				binaries = append(binaries, entry.Name())
+			}
+		}
+	}
+
+	// Also add client tools from cmd/ (plugctl, etc.)
+	// Check for known clients
+	for _, client := range []string{"plugctl"} {
+		if _, err := os.Stat("cmd/" + client); err == nil {
+			binaries = append(binaries, client)
+		}
+	}
+
+	return binaries
+}
+
+func scanPluginDocs(pluginsDir string) string {
+	entries, err := os.ReadDir(pluginsDir)
+	if err != nil {
+		return ""
+	}
+
+	var sb strings.Builder
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+		readmePath := fmt.Sprintf("%s/%s/README.md", pluginsDir, entry.Name())
+		content, err := os.ReadFile(readmePath)
+		if err != nil {
+			continue
+		}
+		sb.WriteString(string(content))
+		sb.WriteString("\n---\n\n")
+	}
+
+	return strings.TrimSuffix(sb.String(), "\n---\n\n")
 }
 
 func generateDownloadTable(cfg Config) string {
